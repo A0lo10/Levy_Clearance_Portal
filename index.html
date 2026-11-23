@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Embakasi Garrison – Levy Clearance</title><link href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1b2430;--mut:#667085;--line:#d8dee6;--bg:#f3f5f8;--pri:#0b5c3b;--ok:#0b7a4b;--bad:#c4311f;--mid:#d99a00}
+*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{margin:0;font:15px/1.4 system-ui,Segoe UI,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+header{background:linear-gradient(90deg,#0b5c3b,#128a58);color:#fff;padding:10px 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+header h1{font-size:16px;margin:0;flex:1}
+nav{display:flex;gap:6px;padding:10px 14px 0;flex-wrap:wrap}nav button{background:#fff;border:1px solid var(--line);color:var(--ink)}nav button.on{background:var(--pri);color:#fff}
+main{padding:14px;max-width:920px;margin:auto}
+input,select,button{font:inherit;padding:9px 11px;border-radius:8px;border:1px solid var(--line);transition:.15s}
+input:focus,select:focus{outline:2px solid #128a5855;border-color:var(--pri)}
+button{background:var(--pri);color:#fff;border:0;cursor:pointer}button:hover{filter:brightness(1.12);transform:translateY(-1px)}button:active{transform:scale(.97)}
+button.g{background:#fff;color:var(--ink);border:1px solid var(--line)}button.r{background:var(--bad)}.bg{background:#0b7a4b}.bb{background:#1d6fd6}.bp{background:#6d3fc4}.bt{background:#0e8f9b}.bo{background:#e07b00}
+.big{width:100%;font-size:20px;padding:14px}label{display:block;font-size:13px;color:var(--mut)}label input,label select{width:100%;margin-top:3px;color:var(--ink)}
+.row{background:#fff;border:1px solid var(--line);border-left-width:6px;border-radius:8px;padding:10px 12px;margin-top:6px;cursor:pointer;display:flex;gap:8px;align-items:center;transition:.15s}
+.row:hover{transform:translateX(3px);box-shadow:0 2px 10px #0001}.row small{color:var(--mut);flex:1}
+.row.ok{border-left-color:var(--ok)}.row.no{border-left-color:var(--bad)}.row.mid{border-left-color:var(--mid)}
+.b{padding:2px 9px;border-radius:10px;font-size:12px;color:#fff;white-space:nowrap}.b.ok{background:var(--ok)}.b.no{background:var(--bad)}.b.mid{background:var(--mid)}
+.box{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px;margin-top:10px;position:relative}
+.x{position:absolute;right:12px;top:8px;cursor:pointer;color:var(--mut);font-size:18px}
+table{border-collapse:collapse;width:100%}td,th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}td.n,th.n{text-align:right}
+.st{font-size:17px;font-weight:700;padding:10px;border-radius:8px;margin:10px 0}.st.ok{background:#e4f5ec;color:var(--ok)}.st.no{background:#fdeceb;color:var(--bad)}.st.mid{background:#fff4d6;color:#8a5b00}
+.f{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:8px 0}.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.bar2{display:flex;align-items:center;gap:10px;margin-top:8px;color:var(--mut)}.bar2 span{flex:1}.mut{color:var(--mut)}
+section,.pop{animation:pop .28s ease}@keyframes pop{from{opacity:0;transform:translateY(8px)}}
+#bar{position:fixed;top:0;left:0;right:0;height:4px;z-index:100;overflow:hidden;background:#0b5c3b22}#bar i{display:block;height:100%;width:40%;background:#f5b301;animation:ld 1s infinite ease-in-out}
+@keyframes ld{from{margin-left:-40%}to{margin-left:100%}}
+#ov{position:fixed;inset:0;background:#fff9;display:flex;align-items:center;justify-content:center;z-index:90;opacity:0;pointer-events:none;transition:opacity .2s}
+#ov.on{opacity:1;pointer-events:all;transition-delay:.12s}#ov div{width:46px;height:46px;border:5px solid #d8dee6;border-top-color:var(--pri);border-radius:50%;animation:sp .7s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+#toasts{position:fixed;right:14px;bottom:14px;z-index:120;display:flex;flex-direction:column;gap:8px}
+.t{padding:12px 16px;border-radius:10px;color:#fff;box-shadow:0 8px 24px #0004;display:flex;gap:8px;align-items:center;animation:tin .4s cubic-bezier(.2,.9,.3,1.2),tout .4s 3s forwards}
+.t.ok{background:var(--ok)}.t.err{background:var(--bad)}.t b{display:inline-block;animation:ck .5s .15s both}
+@keyframes tin{from{transform:translateX(120%);opacity:0}}@keyframes tout{to{transform:translateX(120%);opacity:0}}@keyframes ck{from{transform:scale(0) rotate(-90deg)}to{transform:scale(1)}}
+#login{position:fixed;inset:0;z-index:50;display:grid;grid-template-columns:1.05fr 1fr;background:#f6f7f9}
+#login[hidden]{display:none}
+.lp{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:36px;color:#fff;text-align:center;overflow:hidden;background:linear-gradient(180deg,#c9261a 0 22%,#1c5fd0 22% 48%,#0b2a78 48% 74%,#0f8a3a 74% 100%)}
+.lp::before{content:"";position:absolute;inset:0;background:rgba(6,18,44,.58)}
+.lp>*{position:relative}
+.plate{background:#fff;border-radius:22px;padding:16px 20px;width:min(78%,400px);box-shadow:0 18px 50px #0006}.plate img{display:block;width:100%;height:auto}
+.lp h1{font:700 26px/1.25 Bitter,Georgia,serif;margin:0}.lp p{margin:6px 0 0;font:italic 17px Georgia,serif;color:#f5d36a}
+.rp{display:flex;align-items:center;justify-content:center;padding:32px}
+.fm{width:min(370px,100%)}
+.fm h2{font:700 30px/1.15 Bitter,Georgia,serif;margin:0 0 8px;color:#0b2a78}.fm>.mut{margin:0 0 26px}
+.fm label{font-weight:600;color:var(--ink);font-size:14px}
+.pw{display:flex;gap:8px;margin:6px 0 18px}.pw input{margin:0!important;flex:1;font-size:20px;letter-spacing:3px;padding:13px 14px}.pw button{padding:0 16px}
+.fm .big{background:#0b2a78}.fm small{display:block;margin-top:16px;color:var(--mut);text-align:center}
+@media(max-width:820px){#login{grid-template-columns:1fr;grid-template-rows:auto 1fr;overflow:auto}.lp{padding:22px 18px;gap:12px}.plate{width:min(58%,210px);padding:10px 12px;border-radius:16px}.lp h1{font-size:19px}.lp p{font-size:14px}.rp{align-items:flex-start;padding:26px 20px}}
+.hl{height:36px;width:auto;background:#fff;border-radius:8px;padding:2px 5px}
+.pay{max-width:440px;margin:16px auto 4px;padding:16px;border:1px solid var(--line);border-radius:12px;background:#fafbfc;display:flex;flex-direction:column;gap:14px}
+.pay h3{margin:0;font-size:16px}
+.pay label{display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--ink);font-weight:600}
+.pay label em{font-style:normal;font-weight:400;color:var(--mut);font-size:12.5px;margin-left:6px}
+.pay input,.pay select{width:100%;margin:0}
+.amt{display:flex}.amt span{display:flex;align-items:center;padding:0 12px;background:#eef1f4;border:1px solid var(--line);border-right:0;border-radius:8px 0 0 8px;color:var(--mut);font-weight:600;font-size:13px}.amt input{flex:1;min-width:0;border-radius:0 8px 8px 0}
+.pay .save{width:100%;padding:13px;font-size:16px;margin-top:2px}
+.bw{background:#8b5a2b}button.sent{background:#0b7a4b;cursor:default}button.sent:hover{filter:none;transform:none}button:disabled{opacity:.55;cursor:default}button:disabled:hover{filter:none;transform:none}button.sent:disabled{opacity:1}
+.b.rq{background:#8b5a2b}
+#card{display:none}
+@page{size:A4;margin:0}
+.cd{position:relative;width:210mm;height:297mm;overflow:hidden;break-after:page;padding:10mm;background:#fff;color:#000}.cd:last-child{break-after:auto}
+.cd .in{height:100%;border:3px double #0b5c3b;padding:14mm 14mm 10mm;position:relative}
+.wm{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);font-size:33pt;font-weight:800;color:rgba(11,92,59,.14);white-space:nowrap;letter-spacing:2px;z-index:0}
+.cd .in>*{position:relative;z-index:1}.cd .lg{height:34mm;display:block;margin:0 auto 4mm}.cd h1{margin:0;text-align:center;font-size:21pt;color:#0b5c3b}.cd h2{margin:2mm 0 10mm;text-align:center;font-size:13pt;font-weight:600}
+.cd table{font-size:16pt}.cd td{padding:3mm 3mm;border-bottom:1px solid #999}.cd td:last-child{font-weight:700}
+.cd .s{margin:12mm 0 8mm;border:4px solid #0b5c3b;color:#0b5c3b;text-align:center;font-size:34pt;font-weight:800;padding:5mm}
+.cd .ft{display:flex;justify-content:space-between;font-size:15pt}.cd .nt{font-size:10pt;text-align:center;margin-top:10mm;color:#444}
+.pg{padding:15mm;width:110mm}.pg h3{margin:0;text-align:center}
+@media print{body>*:not(#card){display:none!important}#card{display:block}body{background:#fff}.np{display:none!important}}
+</style></head><body>
+<div id="bar" hidden><i></i></div><div id="ov"><div></div></div><div id="toasts"></div>
+<div id="login" class="pop">
+<aside class="lp"><div class="plate"><img src="logo.png" alt="Embakasi Garrison Comprehensive School crest"></div><div><h1>Embakasi Garrison<br>Comprehensive School</h1><p>Education is wealth</p></div></aside>
+<div class="rp"><div class="fm"><h2>Levy Clearance</h2><p class="mut">Sign in with your PIN to record levy payments and clearance cards.</p>
+<label>PIN<div class="pw"><input id="pin" type="password" placeholder="Enter your PIN" onkeydown="if(event.key=='Enter')login()" autofocus autocomplete="current-password"><button type="button" class="g" onclick="const p=$('pin');p.type=p.type=='password'?'text':'password';this.textContent=p.type=='password'?'Show':'Hide'">Show</button></div></label>
+<button class="big" onclick="login()">Sign in</button><small>Forgot your PIN? Ask the school administrator.</small></div></div></div>
+
+<div id="app" hidden>
+<header><img class="hl" src="logo.png" alt="" onerror="this.remove()"><h1>Embakasi Garrison – Levy Clearance</h1><span id="who"></span><button class="g" onclick="location.reload()">Sign out</button></header>
+<nav id="nav"></nav>
+<main>
+<section id="t_s"><input id="q" class="big" placeholder="Search admission no, name or card no…" oninput="find()" onkeydown="if(event.key=='Enter')first()" autocomplete="off">
+<div class="f"><select id="fg" onchange="gch()"><option value="">All grades</option></select><select id="fs" onchange="find()"><option value="">All streams</option></select><select id="fst" onchange="find()"><option value="">All statuses</option><option value="no">🔴 Due</option><option value="mid">🟡 Partial</option><option value="ok">🟢 Cleared</option><option value="rq">📨 Card requested</option></select></div>
+<div class="bar2"><span id="cnt"></span><button id="bk" class="bp" onclick="bulk()">🖨 Print cards</button></div>
+<div id="det"></div><div id="res"></div><button id="more" class="g" style="margin-top:8px" hidden onclick="lim+=100;list()">Show more</button></section>
+<section id="t_i" hidden><div class="box"><h3 style="margin-top:0">Bulk import (Excel or CSV)</h3>
+<p><b>Learners:</b> Adm, Name, Grade, Stream<br><b>Payments:</b> Adm, Name, Development fee, Building levy, Lunch October, Lunch November<br><span class="mut">Payment columns hold the total each learner has paid. Re-importing never double-counts, and only the missing amount is added. First row is a header.</span></p>
+<div class="f"><select id="itype"><option value="L">Learners</option><option value="P">Payments</option></select><input type="file" id="file" accept=".xlsx,.xls,.csv"><button class="bt" onclick="imp()">⬆ Import</button></div><div id="ires"></div></div></section>
+<section id="t_l" hidden><div class="box"><h3 style="margin-top:0">Register learner</h3><div id="newf"></div></div></section>
+<section id="t_r" hidden><div id="rep"></div></section>
+<section id="t_u" hidden><div class="box"><h3 style="margin-top:0">Teachers</h3><input type="hidden" id="eo">
+<div class="f"><input id="un" placeholder="Teacher name"><input id="up" placeholder="PIN (4+ characters)"><input id="ug" placeholder="Grade e.g. Grade 7"><input id="us" placeholder="Stream (blank = all)"></div>
+<div class="acts"><button class="bg" id="ub" onclick="saveU()">Save teacher</button><button class="g" onclick="clrT()">Clear</button></div><div id="ul" style="margin-top:12px"></div></div></section>
+</main></div>
+<div id="card"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const API='https://script.google.com/macros/s/AKfycbxEypAqYdOIy2R0sSS8n_nvhA3wI_1bhJSxYtX8d_WCgYVbEcV2FwFjAVvCo38ZcSq1oA/exec';
+const SCHOOL='EMBAKASI GARRISON COMPREHENSIVE SCHOOL',LOGO='logo.png'; // put logo.png beside index.html
+const CATS=['dev','bld','oct','nov'],NAMES={dev:'Development fee',bld:'Building levy',oct:'Lunch – October',nov:'Lunch – November'};
+let D,pin,cur,shown=[],lim=100,isA=false,busy=0;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const kes=n=>'KSh '+Number(n).toLocaleString();
+function toast(m,t='ok'){const d=document.createElement('div');d.className='t '+t;d.innerHTML=(t=='ok'?'<b>✓</b>':'<b>✕</b>')+'<span>'+esc(m)+'</span>';$('toasts').appendChild(d);setTimeout(()=>d.remove(),3500)}
+async function api(a,d={}){const r=await fetch(API,{method:'POST',body:JSON.stringify({a,pin,...d})});const j=await r.json();if(j.err)throw new Error(j.err);return j}
+async function loadD(){const d=await api('load');d.R=d.R||{};return d}
+async function run(f){busy++;$('ov').classList.add('on');$('bar').hidden=false;try{await f()}catch(e){toast(e.message,'err')}finally{if(!--busy){$('ov').classList.remove('on');$('bar').hidden=true}}}
+function login(){run(async()=>{pin=$('pin').value.trim();D=await loadD();init()})}
+function init(){isA=D.user.role==='admin';$('login').hidden=true;$('app').hidden=false;$('who').textContent=D.user.name+(isA?'':' · '+D.user.grade+' '+D.user.stream);
+ const T=[['s','Learners']].concat(isA?[['i','Import'],['l','Add learner'],['r','Reports'],['u','Teachers']]:[]);
+ $('nav').innerHTML=T.map(t=>`<button id="n_${t[0]}" onclick="tab('${t[0]}')">${t[1]}</button>`).join('');tab('s');if(!isA)$('bk').className='bw';index();
+ if(isA){$('newf').innerHTML=form(['','','','']);renderU()}filt();$('q').focus()}
+function tab(t){['s','i','l','r','u'].forEach(x=>{$('t_'+x).hidden=x!=t;const b=$('n_'+x);if(b)b.className=x==t?'on':''});if(t=='r')report()}
+function index(){D.S=D.L.map(r=>(r[0]+' '+r[1]+' '+r[4]).toLowerCase())}
+const bal=a=>CATS.map((c,i)=>D.lev[c]-D.p[a][i]);
+const owed=a=>bal(a).reduce((x,y)=>x+Math.max(y,0),0);
+const status=a=>owed(a)<=0?'ok':(CATS.some((c,i)=>D.p[a][i]>0)?'mid':'no');
+const cleared=a=>status(a)=='ok';
+const LBL={ok:'Cleared',mid:'Partial',no:'Due'};
+const badge=a=>{const s=status(a);return`<span class="b ${s}">${LBL[s]}${s=='ok'?'':' · '+kes(owed(a))}</span>`};
+function filt(){const g=[...new Set(D.L.map(r=>r[2]))].sort();$('fg').innerHTML='<option value="">All grades</option>'+g.map(x=>`<option>${esc(x)}</option>`).join('');gch()}
+function gch(){const g=$('fg').value,s=new Set();D.L.forEach(r=>{if(!g||r[2]==g)s.add(r[3])});$('fs').innerHTML='<option value="">All streams</option>'+[...s].sort().map(x=>`<option>${esc(x)}</option>`).join('');find()}
+function find(){lim=100;const q=$('q').value.trim().toLowerCase(),g=$('fg').value,s=$('fs').value,t=$('fst').value;shown=[];
+ for(let i=0;i<D.L.length;i++){const r=D.L[i];if(g&&r[2]!=g)continue;if(s&&r[3]!=s)continue;if(q&&!D.S[i].includes(q))continue;if(t=='rq'){if(!(D.R[r[0]]&&!r[4]))continue}else if(t&&status(r[0])!=t)continue;shown.push(i)}list()}
+function list(){const n=shown.length,c=shown.filter(i=>cleared(D.L[i][0])).length;$('cnt').textContent=n+' learner'+(n==1?'':'s')+' · '+c+' cleared';if(isA)$('bk').textContent='🖨 Print '+c+' cleared card'+(c==1?'':'s');else{const w=shown.filter(i=>{const r=D.L[i];return cleared(r[0])&&!D.R[r[0]]&&!r[4]}).length;$('bk').textContent='📨 Send '+w+' for card issuing';$('bk').disabled=!w}
+ $('res').innerHTML=shown.slice(0,lim).map(i=>{const r=D.L[i];return`<div class="row ${status(r[0])}" onclick="show(${i})"><b>${esc(r[0])}</b> ${esc(r[1])} <small>${esc(r[2])} ${esc(r[3])}</small>${D.R[r[0]]&&!r[4]?(isA?'<span class="b rq">📨 Requested</span>':'<span class="b ok">✓ Sent</span>'):''}${badge(r[0])}</div>`}).join('');$('more').hidden=n<=lim}
+function first(){if(shown.length)show(shown[0])}
+function closeD(){$('det').innerHTML=''}
+function show(i){cur=i;const r=D.L[i],a=r[0],b=bal(a),ok=cleared(a),sx=status(a);list();scrollTo({top:0,behavior:'smooth'});
+ let h=`<div class="box pop"><span class="x" onclick="closeD()">✕</span><h2 style="margin:0">${esc(r[1])}</h2><div class="mut">Adm ${esc(a)} · ${esc(r[2])} ${esc(r[3])}${r[4]?' · Card '+esc(r[4]):''}</div>
+ <table><tr><th>Levy</th><th class="n">Amount</th><th class="n">Paid</th><th class="n">Balance</th></tr>`+
+ CATS.map((c,k)=>`<tr><td>${NAMES[c]}</td><td class="n">${D.lev[c]}</td><td class="n">${D.p[a][k]}</td><td class="n" style="color:var(${b[k]>0?'--bad':'--ok'})">${Math.max(b[k],0)}</td></tr>`).join('')+'</table>';
+ h+=ok?`<div class="st ok">✔ FULLY PAID – CLEARED by ${esc(r[6]||'—')}</div>`:`<div class="st ${sx}">${sx=='mid'?'PARTIALLY PAID':'NOT PAID'} · owes ${kes(owed(a))}</div>`;
+ if(!ok)h+=`<div class="pay"><h3>Record payment</h3>`+CATS.map((c,k)=>b[k]>0?`<label>${NAMES[c]}<em>balance ${kes(b[k])}</em><div class="amt"><span>KSh</span><input id="p_${c}" type="number" inputmode="numeric" min="0" max="${b[k]}" placeholder="Enter amount"></div></label>`:'').join('')+
+  `<label>Method<select id="pm"><option>Cash</option><option>Paybill</option><option>Bank</option></select></label><label>Reference<input id="pr" placeholder="Paybill / bank ref"></label><button class="bg save" onclick="pay()">💾 Save payment</button></div>`;
+ const rq=D.R[a];
+ h+=`<div class="acts">`+(isA?`<button class="bb" onclick="editL()">✏️ Edit</button>`:'')+(ok?(isA?`<button class="bp" onclick="issue()">🖨 ${r[4]?'Reprint':'Print'} card</button>`:(r[4]||rq?`<button class="sent" disabled>✓ ${r[4]?'Card issued':'Sent'}</button>`:`<button class="bw" onclick="sendCard()">📨 Send for card issuing</button>`)):'')+`</div>`;
+ if(isA&&rq&&!r[4])h+=`<p class="mut">Card requested by ${esc(rq)}.</p>`;
+ $('det').innerHTML=h+'<div id="sub"></div></div>'}
+function pay(){const r=D.L[cur],b=bal(r[0]),items=[];
+ for(const [k,c] of CATS.entries()){const e=$('p_'+c);if(e&&e.value){const v=+e.value;if(!(v>0))continue;if(v>b[k])return toast(NAMES[c]+': amount is more than the balance of '+b[k],'err');items.push([c,v])}}
+ if(!items.length)return toast('Enter an amount to save','err');
+ run(async()=>{const m=$('pm').value,ref=$('pr').value.trim(),res=await api('pay',{adm:r[0],items,method:m,ref});D.p[r[0]]=res.p;r[6]=res.cb;show(cur);
+  toast(cleared(r[0])?'Payment saved – learner is CLEARED':'Payment saved');
+  })}
+function issue(){const r=D.L[cur];if(r[4])return printHTML(cardHTML(r));
+ run(async()=>{const c=await api('card',{adm:r[0]});r[4]=c.no;r[5]=c.date;show(cur);toast('Card '+c.no+' issued');printHTML(cardHTML(r))})}
+function sendCard(){const r=D.L[cur];run(async()=>{await api('req',{adms:[r[0]]});D.R[r[0]]=D.user.name;show(cur);toast('Sent to admin for card issuing')})}
+function bulkSend(){const ids=shown.map(i=>D.L[i]).filter(r=>cleared(r[0])&&!D.R[r[0]]&&!r[4]);if(!ids.length)return toast('Nothing new to send','err');
+ if(!confirm('Send '+ids.length+' cleared learner'+(ids.length==1?'':'s')+' for card issuing?'))return;
+ run(async()=>{for(let i=0;i<ids.length;i+=300)await api('req',{adms:ids.slice(i,i+300).map(r=>r[0])});ids.forEach(r=>D.R[r[0]]=D.user.name);list();if($('det').innerHTML)show(cur);toast(ids.length+' sent for card issuing')})}
+function cardHTML(r){return`<div class="cd"><div class="wm">${SCHOOL}</div><div class="in"><img class="lg" src="${LOGO}" onerror="this.style.display='none'"><h1>${SCHOOL}</h1><h2>JANUARY 2027 REOPENING · LEVY CLEARANCE CARD</h2><table>
+<tr><td>Learner</td><td>${esc(r[1])}</td></tr><tr><td>Admission No</td><td>${esc(r[0])}</td></tr><tr><td>Grade / Stream</td><td>${esc(r[2])} ${esc(r[3])}</td></tr>`+
+ CATS.map(k=>`<tr><td>${NAMES[k]}</td><td>PAID ✔</td></tr>`).join('')+`</table><div class="s">CLEARED</div><div class="ft"><span>Card No: <b>${esc(r[4])}</b></span><span>Issued: ${esc(r[5])}</span></div>
+<p class="nt">This card is a gate pass for the January 2027 reopening. It is valid only when printed by the school and is void if altered.</p></div></div>`}
+function bulk(){if(!isA)return bulkSend();const ids=shown.map(i=>D.L[i]).filter(r=>cleared(r[0]));if(!ids.length)return toast('No cleared learners in this list','err');
+ if(!confirm('Print '+ids.length+' A4 cards for the learners in this list?'))return;
+ run(async()=>{const need=ids.filter(r=>!r[4]);for(let i=0;i<need.length;i+=300){const part=need.slice(i,i+300),{res}=await api('cards',{adms:part.map(r=>r[0])});part.forEach(r=>{if(res[r[0]]){r[4]=res[r[0]][0];r[5]=res[r[0]][1]}})}
+  toast(ids.length+' cards ready to print');index();printHTML(ids.map(cardHTML).join(''))})}
+function printHTML(h){$('card').innerHTML=h;setTimeout(()=>print(),350)}
+function form(v,old){return`<div class="f"><input id="f0" placeholder="Admission no" value="${esc(v[0])}"><input id="f1" placeholder="Full name" value="${esc(v[1])}"><input id="f2" placeholder="Grade" value="${esc(v[2])}"><input id="f3" placeholder="Stream" value="${esc(v[3])}"></div><button class="bg" onclick="saveL(${old?1:0})">Save learner</button>`}
+function editL(){$('sub').innerHTML='<br>'+form(D.L[cur],1)}
+function saveL(edit){const v=[0,1,2,3].map(i=>$('f'+i).value.trim()),old=edit?D.L[cur][0]:'';
+ run(async()=>{await api('save_l',{old,adm:v[0],name:v[1],grade:v[2],stream:v[3]});
+  if(edit){const r=D.L[cur];if(v[0]!==old){D.p[v[0]]=D.p[old];delete D.p[old]}r[0]=v[0];r[1]=v[1];r[2]=v[2];r[3]=v[3];index();show(cur);toast('Learner updated')}
+  else{D.L.push([v[0],v[1],v[2],v[3],'','','']);D.p[v[0]]=[0,0,0,0];index();filt();$('newf').innerHTML=form(['','','','']);toast('Learner registered')}})}
+function imp(){const f=$('file').files[0],t=$('itype').value;if(!f)return toast('Choose a file first','err');
+ run(async()=>{const wb=XLSX.read(await f.arrayBuffer(),{type:'array'});
+  let rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,raw:false,defval:''}).slice(1).filter(r=>String(r[0]).trim());
+  const num=x=>+String(x).replace(/[^\d.]/g,'')||0;
+  if(t=='P')rows=rows.map(r=>[r[0],r[1],num(r[2]),num(r[3]),num(r[4]),num(r[5])]);
+  const S={ok:0,same:0,un:[],over:[],added:0,upd:0,dups:[]};
+  for(let i=0;i<rows.length;i+=800){const x=await api(t=='L'?'imp_l':'imp_p',{rows:rows.slice(i,i+800)});
+   for(const k in x)Array.isArray(x[k])?S[k]=S[k].concat(x[k]):S[k]+=x[k];$('ires').textContent='Processed '+Math.min(i+800,rows.length)+' of '+rows.length+'…'}
+  D=await loadD();index();filt();
+  const L=(n,a)=>a.length?`<p><b>${n}: ${a.length}</b><br>${esc(a.slice(0,60).join(', '))}${a.length>60?' …':''}</p>`:'';
+  $('ires').innerHTML=t=='L'?`<p>Added <b>${S.added}</b>, updated <b>${S.upd}</b></p>`+L('Duplicates in file',S.dups):`<p>Added <b>${S.ok}</b> payment records · <b>${S.same}</b> learners already up to date</p>`+L('Admission numbers not found (register these learners first)',S.un)+L('Amounts above the levy (capped)',S.over);
+  toast('Import complete')})}
+function report(){const n=D.L.length,g={};let h=`<div class="box"><h3 style="margin-top:0">Collections (${n} learners)</h3><table><tr><th>Levy</th><th class="n">Expected</th><th class="n">Collected</th><th class="n">Outstanding</th></tr>`,cl=0;
+ CATS.forEach((c,k)=>{let s=0;D.L.forEach(r=>s+=D.p[r[0]][k]);h+=`<tr><td>${NAMES[c]}</td><td class="n">${kes(n*D.lev[c])}</td><td class="n">${kes(s)}</td><td class="n">${kes(n*D.lev[c]-s)}</td></tr>`});
+ D.L.forEach(r=>{const k=r[2]+' '+r[3],o=g[k]=g[k]||[0,0];o[0]++;if(cleared(r[0])){o[1]++;cl++}});
+ h+=`</table><h3>Clearance: ${cl} of ${n} cleared (${n?Math.round(cl/n*100):0}%)</h3><table><tr><th>Class</th><th class="n">Learners</th><th class="n">Cleared</th><th class="n">Pending</th></tr>`+
+ Object.keys(g).sort().map(k=>`<tr><td>${esc(k)}</td><td class="n">${g[k][0]}</td><td class="n">${g[k][1]}</td><td class="n">${g[k][0]-g[k][1]}</td></tr>`).join('')+'</table><p class="np"><button class="bp" onclick="printHTML(\'<div class=pg style=width:auto>\'+$(\'rep\').innerHTML+\'</div>\')">🖨 Print report</button></p></div>';$('rep').innerHTML=h}
+function renderU(){$('ul').innerHTML='<table><tr><th>Name</th><th>PIN</th><th>Class</th><th></th></tr>'+D.U.map((u,k)=>u[0]=='admin'?'':`<tr><td>${esc(u[1])}</td><td><b>${esc(u[2])}</b></td><td>${esc(u[3])} ${esc(u[4])}</td><td><button class="bb" onclick="editT(${k})">Edit</button> <button class="r" onclick="delT(${k})">Delete</button></td></tr>`).join('')+'</table>'}
+function editT(k){const u=D.U[k];$('eo').value=u[1];$('un').value=u[1];$('up').value=u[2];$('ug').value=u[3];$('us').value=u[4];$('ub').textContent='Update teacher';scrollTo({top:0,behavior:'smooth'})}
+function clrT(){['eo','un','up','ug','us'].forEach(x=>$(x).value='');$('ub').textContent='Save teacher'}
+function saveU(){const v={old:$('eo').value,name:$('un').value.trim(),tpin:$('up').value.trim(),grade:$('ug').value.trim(),stream:$('us').value.trim()};
+ run(async()=>{await api('save_u',v);const row=['teacher',v.name,v.tpin,v.grade,v.stream],i=D.U.findIndex(u=>u[1]==(v.old||v.name)&&u[0]!='admin');i>=0?D.U[i]=row:D.U.push(row);renderU();clrT();toast('Teacher saved')})}
+function delT(k){const u=D.U[k];if(!confirm('Delete teacher '+u[1]+'?'))return;run(async()=>{await api('del_u',{name:u[1]});D.U.splice(k,1);renderU();toast('Teacher deleted')})}
+</script></body></html>
