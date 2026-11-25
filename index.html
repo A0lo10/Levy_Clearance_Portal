@@ -54,6 +54,7 @@ section,.pop{animation:pop .28s ease}@keyframes pop{from{opacity:0;transform:tra
 .pay label em{font-style:normal;font-weight:400;color:var(--mut);font-size:12.5px;margin-left:6px}
 .pay input,.pay select{width:100%;margin:0}
 .amt{display:flex}.amt span{display:flex;align-items:center;padding:0 12px;background:#eef1f4;border:1px solid var(--line);border-right:0;border-radius:8px 0 0 8px;color:var(--mut);font-weight:600;font-size:13px}.amt input{flex:1;min-width:0;border-radius:0 8px 8px 0}
+.lv{display:flex;flex-direction:column;gap:6px}.lt{font-weight:600;font-size:14px}.lt em{font-style:normal;font-weight:400;color:var(--mut);font-size:12.5px;margin-left:6px}.ar{display:grid;grid-template-columns:1fr 1fr;gap:8px}@media(max-width:380px){.ar{grid-template-columns:1fr}}
 .pay .save{width:100%;padding:13px;font-size:16px;margin-top:2px}
 .bw{background:#8b5a2b}button.sent{background:#0b7a4b;cursor:default}button.sent:hover{filter:none;transform:none}button:disabled{opacity:.55;cursor:default}button:disabled:hover{filter:none;transform:none}button.sent:disabled{opacity:1}
 .b.rq{background:#8b5a2b}
@@ -134,16 +135,16 @@ function show(i){cur=i;const r=D.L[i],a=r[0],b=bal(a),ok=cleared(a),sx=status(a)
  <table><tr><th>Levy</th><th class="n">Amount</th><th class="n">Paid</th><th class="n">Balance</th></tr>`+
  CATS.map((c,k)=>`<tr><td>${NAMES[c]}</td><td class="n">${D.lev[c]}</td><td class="n">${D.p[a][k]}</td><td class="n" style="color:var(${b[k]>0?'--bad':'--ok'})">${Math.max(b[k],0)}</td></tr>`).join('')+'</table>';
  h+=ok?`<div class="st ok">✔ FULLY PAID – CLEARED by ${esc(r[6]||'—')}</div>`:`<div class="st ${sx}">${sx=='mid'?'PARTIALLY PAID':'NOT PAID'} · owes ${kes(owed(a))}</div>`;
- if(!ok)h+=`<div class="pay"><h3>Record payment</h3>`+CATS.map((c,k)=>b[k]>0?`<label>${NAMES[c]}<em>balance ${kes(b[k])}</em><div class="amt"><span>KSh</span><input id="p_${c}" type="number" inputmode="numeric" min="0" max="${b[k]}" placeholder="Enter amount"></div></label>`:'').join('')+
-  `<label>Method<select id="pm"><option>Cash</option><option>Paybill</option><option>Bank</option></select></label><label>Reference<input id="pr" placeholder="Paybill / bank ref"></label><button class="bg save" onclick="pay()">💾 Save payment</button></div>`;
+ if(!ok)h+=`<div class="pay"><h3>Record payment</h3>`+CATS.map((c,k)=>b[k]>0?`<div class="lv"><div class="lt">${NAMES[c]}<em>balance ${kes(b[k])}</em></div><div class="ar"><div class="amt"><span>KSh</span><input id="p_${c}" type="number" inputmode="numeric" min="0" max="${b[k]}" placeholder="Amount"></div><input id="r_${c}" placeholder="Reference e.g. M-Pesa code" autocomplete="off"></div></div>`:'').join('')+
+  `<label>Method<select id="pm"><option>Cash</option><option>Paybill</option><option>Bank</option></select></label><button class="bg save" onclick="pay()">💾 Save payment</button></div>`;
  const rq=D.R[a];
  h+=`<div class="acts">`+(isA?`<button class="bb" onclick="editL()">✏️ Edit</button>`:'')+(ok?(isA?`<button class="bp" onclick="issue()">🖨 ${r[4]?'Reprint':'Print'} card</button>`:(r[4]||rq?`<button class="sent" disabled>✓ ${r[4]?'Card issued':'Sent'}</button>`:`<button class="bw" onclick="sendCard()">📨 Send for card issuing</button>`)):'')+`</div>`;
  if(isA&&rq&&!r[4])h+=`<p class="mut">Card requested by ${esc(rq)}.</p>`;
  $('det').innerHTML=h+'<div id="sub"></div></div>'}
 function pay(){const r=D.L[cur],b=bal(r[0]),items=[];
- for(const [k,c] of CATS.entries()){const e=$('p_'+c);if(e&&e.value){const v=+e.value;if(!(v>0))continue;if(v>b[k])return toast(NAMES[c]+': amount is more than the balance of '+b[k],'err');items.push([c,v])}}
+ for(const [k,c] of CATS.entries()){const e=$('p_'+c);if(e&&e.value){const v=+e.value;if(!(v>0))continue;if(v>b[k])return toast(NAMES[c]+': amount is more than the balance of '+b[k],'err');items.push([c,v,($('r_'+c).value||'').trim()])}}
  if(!items.length)return toast('Enter an amount to save','err');
- run(async()=>{const m=$('pm').value,ref=$('pr').value.trim(),res=await api('pay',{adm:r[0],items,method:m,ref});D.p[r[0]]=res.p;r[6]=res.cb;show(cur);
+ run(async()=>{const m=$('pm').value,res=await api('pay',{adm:r[0],items,method:m});D.p[r[0]]=res.p;r[6]=res.cb;show(cur);
   toast(cleared(r[0])?'Payment saved – learner is CLEARED':'Payment saved');
   })}
 function issue(){const r=D.L[cur];if(r[4])return printHTML(cardHTML(r));
