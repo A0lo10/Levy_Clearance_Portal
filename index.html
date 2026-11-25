@@ -86,7 +86,7 @@ section,.pop{animation:pop .28s ease}@keyframes pop{from{opacity:0;transform:tra
 <div class="bar2"><span id="cnt"></span><button id="bk" class="bp" onclick="bulk()">🖨 Print cards</button></div>
 <div id="det"></div><div id="res"></div><button id="more" class="g" style="margin-top:8px" hidden onclick="lim+=100;list()">Show more</button></section>
 <section id="t_i" hidden><div class="box"><h3 style="margin-top:0">Bulk import (Excel or CSV)</h3>
-<p><b>Learners:</b> Adm, Name, Grade, Stream<br><b>Payments:</b> Adm, Name, Development fee, Building levy, Lunch October, Lunch November<br><span class="mut">Payment columns hold the total each learner has paid. Re-importing never double-counts, and only the missing amount is added. First row is a header.</span></p>
+<p><b>Learners:</b> Adm, Name, Grade, Stream<br><b>Payments:</b> Adm, Name, Development fee, Building levy, Lunch September, Lunch September<br><span class="mut">Payment columns hold the total each learner has paid. Re-importing never double-counts, and only the missing amount is added. First row is a header.</span></p>
 <div class="f"><select id="itype"><option value="L">Learners</option><option value="P">Payments</option></select><input type="file" id="file" accept=".xlsx,.xls,.csv"><button class="bt" onclick="imp()">⬆ Import</button></div><div id="ires"></div></div></section>
 <section id="t_l" hidden><div class="box"><h3 style="margin-top:0">Register learner</h3><div id="newf"></div></div></section>
 <section id="t_r" hidden><div id="rep"></div></section>
@@ -100,7 +100,7 @@ section,.pop{animation:pop .28s ease}@keyframes pop{from{opacity:0;transform:tra
 <script>
 const API='https://script.google.com/macros/s/AKfycbxEypAqYdOIy2R0sSS8n_nvhA3wI_1bhJSxYtX8d_WCgYVbEcV2FwFjAVvCo38ZcSq1oA/exec';
 const SCHOOL='EMBAKASI GARRISON COMPREHENSIVE SCHOOL',LOGO='logo.png'; // put logo.png beside index.html
-const CATS=['dev','bld','oct','nov'],NAMES={dev:'Development fee',bld:'Building levy',oct:'Lunch – October',nov:'Lunch – November'};
+const CATS=['dev','bld','oct','nov'],NAMES={dev:'Development fee',bld:'Building levy',oct:'Lunch – September',nov:'Lunch – October'};
 let D,pin,cur,shown=[],lim=100,isA=false,busy=0;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
