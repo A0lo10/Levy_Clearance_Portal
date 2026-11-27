@@ -68,6 +68,11 @@ section,.pop{animation:pop .28s ease}@keyframes pop{from{opacity:0;transform:tra
 .cd .s{margin:12mm 0 8mm;border:4px solid #0b5c3b;color:#0b5c3b;text-align:center;font-size:34pt;font-weight:800;padding:5mm}
 .cd .ft{display:flex;justify-content:space-between;font-size:15pt}.cd .nt{font-size:10pt;text-align:center;margin-top:10mm;color:#444}
 .pg{padding:15mm;width:110mm}.pg h3{margin:0;text-align:center}
+.pt td,.pt th{font-size:13px;white-space:nowrap}.pt input,.pt select{width:auto;max-width:120px;margin:0;padding:6px}.pt .vd td{color:#999;text-decoration:line-through}.pt .ac{display:flex;gap:6px}
+.stt{width:100%;border-collapse:collapse;font-size:13px}.stt th,.stt td{border:1px solid #cfd5dc;padding:5px 7px;text-align:left}.stt th{background:#eef1f4}.stt .n{text-align:right}.stt tfoot td{font-weight:700;background:#f6f7f9}
+@page st{size:A4;margin:12mm}
+.st2{page:st;color:#000;font-family:Arial,Helvetica,sans-serif}.st2 .sh{display:flex;align-items:center;gap:12px;margin-bottom:10px}.st2 .sh img{height:56px}.st2 .sh b{font-size:15pt}.st2 .sh div{font-size:11pt;line-height:1.4}
+.st2 .stt{font-size:10pt}.st2 .stt th,.st2 .stt td{border:1px solid #777;padding:3px 5px}.st2 thead{display:table-header-group}.st2 tr{break-inside:avoid}
 @media print{body>*:not(#card){display:none!important}#card{display:block}body{background:#fff}.np{display:none!important}}
 </style></head><body>
 <div id="bar" hidden><i></i></div><div id="ov"><div></div></div><div id="toasts"></div>
@@ -86,7 +91,7 @@ section,.pop{animation:pop .28s ease}@keyframes pop{from{opacity:0;transform:tra
 <div class="bar2"><span id="cnt"></span><button id="bk" class="bp" onclick="bulk()">🖨 Print cards</button></div>
 <div id="det"></div><div id="res"></div><button id="more" class="g" style="margin-top:8px" hidden onclick="lim+=100;list()">Show more</button></section>
 <section id="t_i" hidden><div class="box"><h3 style="margin-top:0">Bulk import (Excel or CSV)</h3>
-<p><b>Learners:</b> Adm, Name, Grade, Stream<br><b>Payments:</b> Adm, Name, Development fee, Building levy, Lunch September, Lunch September<br><span class="mut">Payment columns hold the total each learner has paid. Re-importing never double-counts, and only the missing amount is added. First row is a header.</span></p>
+<p><b>Learners:</b> Adm, Name, Grade, Stream<br><b>Payments:</b> Adm, Name, Development fee, Building levy, Lunch October, Lunch November<br><span class="mut">Payment columns hold the total each learner has paid. Re-importing never double-counts, and only the missing amount is added. First row is a header.</span></p>
 <div class="f"><select id="itype"><option value="L">Learners</option><option value="P">Payments</option></select><input type="file" id="file" accept=".xlsx,.xls,.csv"><button class="bt" onclick="imp()">⬆ Import</button></div><div id="ires"></div></div></section>
 <section id="t_l" hidden><div class="box"><h3 style="margin-top:0">Register learner</h3><div id="newf"></div></div></section>
 <section id="t_r" hidden><div id="rep"></div></section>
@@ -100,7 +105,7 @@ section,.pop{animation:pop .28s ease}@keyframes pop{from{opacity:0;transform:tra
 <script>
 const API='https://script.google.com/macros/s/AKfycbxEypAqYdOIy2R0sSS8n_nvhA3wI_1bhJSxYtX8d_WCgYVbEcV2FwFjAVvCo38ZcSq1oA/exec';
 const SCHOOL='EMBAKASI GARRISON COMPREHENSIVE SCHOOL',LOGO='logo.png'; // put logo.png beside index.html
-const CATS=['dev','bld','oct','nov'],NAMES={dev:'Development fee',bld:'Building levy',oct:'Lunch – September',nov:'Lunch – October'};
+const CATS=['dev','bld','oct','nov'],NAMES={dev:'Development fee',bld:'Building levy',oct:'Lunch – October',nov:'Lunch – November'};
 let D,pin,cur,shown=[],lim=100,isA=false,busy=0;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -140,7 +145,7 @@ function show(i){cur=i;const r=D.L[i],a=r[0],b=bal(a),ok=cleared(a),sx=status(a)
  const rq=D.R[a];
  h+=`<div class="acts">`+(isA?`<button class="bb" onclick="editL()">✏️ Edit</button>`:'')+(ok?(isA?`<button class="bp" onclick="issue()">🖨 ${r[4]?'Reprint':'Print'} card</button>`:(r[4]||rq?`<button class="sent" disabled>✓ ${r[4]?'Card issued':'Sent'}</button>`:`<button class="bw" onclick="sendCard()">📨 Send for card issuing</button>`)):'')+`</div>`;
  if(isA&&rq&&!r[4])h+=`<p class="mut">Card requested by ${esc(rq)}.</p>`;
- $('det').innerHTML=h+'<div id="sub"></div></div>'}
+ $('det').innerHTML=h+'<div id="sub"></div></div>';if(isA)loadPays(a)}
 function pay(){const r=D.L[cur],b=bal(r[0]),items=[];
  for(const [k,c] of CATS.entries()){const e=$('p_'+c);if(e&&e.value){const v=+e.value;if(!(v>0))continue;if(v>b[k])return toast(NAMES[c]+': amount is more than the balance of '+b[k],'err');items.push([c,v,($('r_'+c).value||'').trim()])}}
  if(!items.length)return toast('Enter an amount to save','err');
@@ -184,7 +189,41 @@ function report(){const n=D.L.length,g={};let h=`<div class="box"><h3 style="mar
  CATS.forEach((c,k)=>{let s=0;D.L.forEach(r=>s+=D.p[r[0]][k]);h+=`<tr><td>${NAMES[c]}</td><td class="n">${kes(n*D.lev[c])}</td><td class="n">${kes(s)}</td><td class="n">${kes(n*D.lev[c]-s)}</td></tr>`});
  D.L.forEach(r=>{const k=r[2]+' '+r[3],o=g[k]=g[k]||[0,0];o[0]++;if(cleared(r[0])){o[1]++;cl++}});
  h+=`</table><h3>Clearance: ${cl} of ${n} cleared (${n?Math.round(cl/n*100):0}%)</h3><table><tr><th>Class</th><th class="n">Learners</th><th class="n">Cleared</th><th class="n">Pending</th></tr>`+
- Object.keys(g).sort().map(k=>`<tr><td>${esc(k)}</td><td class="n">${g[k][0]}</td><td class="n">${g[k][1]}</td><td class="n">${g[k][0]-g[k][1]}</td></tr>`).join('')+'</table><p class="np"><button class="bp" onclick="printHTML(\'<div class=pg style=width:auto>\'+$(\'rep\').innerHTML+\'</div>\')">🖨 Print report</button></p></div>';$('rep').innerHTML=h}
+ Object.keys(g).sort().map(k=>`<tr><td>${esc(k)}</td><td class="n">${g[k][0]}</td><td class="n">${g[k][1]}</td><td class="n">${g[k][0]-g[k][1]}</td></tr>`).join('')+'</table><p class="np"><button class="bp" onclick="printHTML(\'<div class=pg style=width:auto>\'+$(\'rep1\').innerHTML+\'</div>\')">🖨 Print report</button></p></div>';$('rep').innerHTML=stBox()+'<div id="rep1">'+h+'</div>';stInit()}
+
+function stBox(){return`<div class="box"><h3 style="margin-top:0">Class fee statement (for parent follow-up)</h3><div class="f"><select id="sg" onchange="stG()"></select><select id="ss" onchange="stRender()"></select><select id="sm" onchange="stRender()"><option value="bal">Balance owed</option><option value="paid">Amount paid</option></select><select id="so" onchange="stRender()"><option value="all">All learners</option><option value="owing">Only learners who owe</option></select></div>
+<div class="acts np"><button class="bg" onclick="stXlsx()">⬇ Download Excel</button><button class="bp" onclick="stPdf()">📄 Save as PDF / Print</button></div><div id="stv" style="overflow-x:auto;margin-top:10px"></div></div>`}
+function stInit(){const g=[...new Set(D.L.map(r=>r[2]))].sort();$('sg').innerHTML='<option value="">All grades</option>'+g.map(x=>`<option>${esc(x)}</option>`).join('');stG()}
+function stG(){const g=$('sg').value,t=new Set();D.L.forEach(r=>{if(!g||r[2]==g)t.add(r[3])});$('ss').innerHTML='<option value="">All streams</option>'+[...t].sort().map(x=>`<option>${esc(x)}</option>`).join('');stRender()}
+function stData(){const g=$('sg').value,t=$('ss').value,m=$('sm').value,o=$('so').value;
+ const L=D.L.filter(r=>(!g||r[2]==g)&&(!t||r[3]==t)&&(o!='owing'||owed(r[0])>0)).sort((x,y)=>String(x[1]).localeCompare(String(y[1])));
+ const val=a=>m=='bal'?bal(a).map(v=>Math.max(v,0)):D.p[a].slice();
+ const rows=L.map((r,i)=>{const v=val(r[0]);return[i+1,r[0],r[1],...v,v.reduce((x,y)=>x+y,0)]});
+ const tot=[0,1,2,3,4].map(k=>rows.reduce((x,r)=>x+r[3+k],0));
+ return{title:[g||'All grades',t].filter(Boolean).join(' ')+' – '+(m=='bal'?'Outstanding levy balances':'Levy amounts paid'),head:['No.','Adm','Name',...CATS.map(c=>NAMES[c]),'Total'],rows,tot,date:new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}}
+function stTable(d){const f=v=>v?v.toLocaleString('en-KE'):'–';
+ return`<table class="stt"><thead><tr>${d.head.map((h,i)=>`<th class="${i>2?'n':''}">${esc(h)}</th>`).join('')}</tr></thead><tbody>`+d.rows.map(r=>`<tr>${r.map((v,i)=>i>2?`<td class="n">${f(v)}</td>`:`<td>${esc(v)}</td>`).join('')}</tr>`).join('')+`</tbody><tfoot><tr><td></td><td></td><td>TOTAL (${d.rows.length} learners)</td>${d.tot.map(v=>`<td class="n">${f(v)}</td>`).join('')}</tr></tfoot></table>`}
+function stRender(){const d=stData();$('stv').innerHTML=d.rows.length?`<p class="mut">${esc(d.title)} · ${d.rows.length} learner${d.rows.length==1?'':'s'}</p>`+stTable(d):'<p class="mut">No learners match these filters.</p>'}
+function stPdf(){const d=stData();if(!d.rows.length)return toast('No learners to print','err');
+ printHTML(`<div class="st2"><div class="sh"><img src="logo.png" alt=""><div><b>Embakasi Garrison Comprehensive School</b><br>${esc(d.title)}<br><small>Printed ${esc(d.date)}</small></div></div>`+stTable(d)+'</div>')}
+function stXlsx(){const d=stData();if(!d.rows.length)return toast('No learners to export','err');
+ const ws=XLSX.utils.aoa_to_sheet([['Embakasi Garrison Comprehensive School'],[d.title],['Printed '+d.date],[],d.head,...d.rows,['','','TOTAL ('+d.rows.length+' learners)',...d.tot]]);
+ ws['!cols']=[{wch:6},{wch:10},{wch:30},{wch:16},{wch:16},{wch:18},{wch:18},{wch:12}];
+ const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Statement');
+ XLSX.writeFile(wb,d.title.replace(/[^A-Za-z0-9]+/g,'_')+'.xlsx')}
+
+let PAY=[],EDIT='';
+async function loadPays(a){const e=$('sub');if(!e)return;e.innerHTML='<p class="mut">Loading payments…</p>';
+ try{const x=await api('history',{adm:a});if(!$('sub')||D.L[cur][0]!=a)return;PAY=x.h;EDIT='';payTable()}catch(err){if($('sub'))$('sub').innerHTML='<p class="mut">Could not load payments</p>'}}
+function payTable(){const e=$('sub');if(!e)return;
+ const row=p=>{const v=p[6]=='VOID';return p[0]==EDIT?`<tr><td>${esc(p[1])}</td><td><select id="e_c">${CATS.map(c=>`<option value="${c}"${c==p[2]?' selected':''}>${NAMES[c]}</option>`).join('')}</select></td><td><input id="e_a" type="number" inputmode="numeric" value="${p[3]}" style="width:90px"></td><td><select id="e_m">${['Cash','Paybill','Bank','Import'].map(m=>`<option${m==p[4]?' selected':''}>${m}</option>`).join('')}</select></td><td><input id="e_r" value="${esc(p[5])}"></td><td>${esc(p[7]||'')}</td><td class="ac"><button class="bg" onclick="pSave('${p[0]}')">Save</button><button class="g" onclick="EDIT='';payTable()">Cancel</button></td></tr>`
+ :`<tr class="${v?'vd':''}"><td>${esc(p[1])}</td><td>${NAMES[p[2]]||esc(p[2])}</td><td class="n">${p[3]}</td><td>${esc(p[4])}</td><td>${esc(p[5])}</td><td>${esc(p[7]||'')}</td><td class="ac">${v?'<span class="mut">Voided</span>':`<button class="bb" onclick="EDIT='${p[0]}';payTable()">Edit</button><button class="r" onclick="pVoid('${p[0]}')">Void</button>`}</td></tr>`};
+ e.innerHTML='<h3>Payments recorded</h3>'+(PAY.length?`<div style="overflow-x:auto"><table class="pt"><tr><th>Date</th><th>Levy</th><th class="n">Amount</th><th>Method</th><th>Reference</th><th>Recorded by</th><th></th></tr>${PAY.map(row).join('')}</table></div>`:'<p class="mut">No payments recorded yet.</p>')}
+function pSave(id){const r=D.L[cur],v={id,cat:$('e_c').value,amount:+$('e_a').value,method:$('e_m').value,ref:$('e_r').value.trim()};
+ if(!(v.amount>0))return toast('Enter a valid amount','err');
+ run(async()=>{const res=await api('edit_pay',v);D.p[r[0]]=res.p;r[6]=res.cb;show(cur);toast('Payment updated')})}
+function pVoid(id){if(!confirm('Void this payment? It will no longer count towards the learner\'s balance.'))return;const r=D.L[cur];
+ run(async()=>{const res=await api('void',{id,reason:'Voided by admin'});D.p[r[0]]=res.p;r[6]=res.cb;show(cur);toast('Payment voided')})}
 function renderU(){$('ul').innerHTML='<table><tr><th>Name</th><th>PIN</th><th>Class</th><th></th></tr>'+D.U.map((u,k)=>u[0]=='admin'?'':`<tr><td>${esc(u[1])}</td><td><b>${esc(u[2])}</b></td><td>${esc(u[3])} ${esc(u[4])}</td><td><button class="bb" onclick="editT(${k})">Edit</button> <button class="r" onclick="delT(${k})">Delete</button></td></tr>`).join('')+'</table>'}
 function editT(k){const u=D.U[k];$('eo').value=u[1];$('un').value=u[1];$('up').value=u[2];$('ug').value=u[3];$('us').value=u[4];$('ub').textContent='Update teacher';scrollTo({top:0,behavior:'smooth'})}
 function clrT(){['eo','un','up','ug','us'].forEach(x=>$(x).value='');$('ub').textContent='Save teacher'}
